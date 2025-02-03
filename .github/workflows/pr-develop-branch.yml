@@ -14,15 +14,13 @@ jobs:
     validate-deployment-on-develop-org:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                 node-version: '20'
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                 fetch-depth: 0
-
-
             # Apex::[CommunitiesLoginControllerTest,MyProfilePageControllerTest]::Apex
             # or Apex::[all]::Apex to run all tests
             - name: 'Read PR Body'
