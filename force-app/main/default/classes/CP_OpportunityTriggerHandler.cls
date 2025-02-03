@@ -14,7 +14,7 @@ public without sharing class CP_OpportunityTriggerHandler {
         }
     }
     
-    //Stage Tracking in between "Licensor Review" and "Approved"
+   
     public static void beforeUpdate(List<Opportunity> opportunities, Map<id,Opportunity> oldMap){
         System.debug(' Trigger beforeUpdate is executing');
         System.debug('Opportunities being processed: ' + opportunities.size());
@@ -33,7 +33,7 @@ public without sharing class CP_OpportunityTriggerHandler {
                     }
                     
                     //Populate Licensor Review End Date 
-                    if(opp.stageName == 'Approved' && oldopp.stageName == 'Licensor Review'){
+                    else if (opp.stageName == 'Approved' && oldopp.stageName == 'Licensor Review'){
                         if(opp.Licensor_Review_End_Date__c == null){
                            opp.Licensor_Review_End_Date__c = system.now();
                             system.debug('Licensor Review End Date Set');

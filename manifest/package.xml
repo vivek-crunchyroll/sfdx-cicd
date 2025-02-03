@@ -13,6 +13,10 @@
 		<name>ApexComponent</name>
 	</types>
 	<types>
+		<members>apexEmailNotifications</members>
+		<name>ApexEmailNotifications</name>
+	</types>
+	<types>
 		<members>*</members>
 		<name>ApexPage</name>
 	</types>
