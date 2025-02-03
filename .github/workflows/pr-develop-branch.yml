@@ -33,7 +33,7 @@ jobs:
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
             - name: 'Install Salesforce CLI'
               run: |
-                  wget wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+                  wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
                   mkdir -p ~/cli/sf
                   tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
                   echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
