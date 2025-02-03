@@ -25,7 +25,7 @@ jobs:
                   echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -u -a=integration
 
             - name: 'Deploy the entire branch to Integration org'
-              run: sf project deploy start -d force-app/ --target-org=integration --test-level RunLocalTests -w 30 --json
+              run: sf project deploy start -d force-app/ --target-org=vivek.chander@crunchyroll.com.crunchydev --test-level RunLocalTests -w 30 --json
 
 
             # - name: 'Authenticate to Staging Org'
