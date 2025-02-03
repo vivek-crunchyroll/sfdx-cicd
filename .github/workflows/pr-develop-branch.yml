@@ -45,15 +45,11 @@ jobs:
             - name: 'Installing SFDX scanner'
               run: sf plugins install @salesforce/sfdx-scanner
 
-            # Prior to setting up this workflow, you have to create a Github Secret
-            # that contains the sfdx url of the integration/qa org.
-
             # The steps to generate the url are here
             #sf org login web -r https://crunchyrollllc--cpdev.sandbox.my.salesforce.com
             #sf org display --target-org vivek.chander@crunchyroll.com.cpdev --verbose --json > authFile.json
 
             # The URL is stored in the Github Secret named SFDX_INTEGRATION_URL
-            # so here we store the URL into a text file
             - name: 'Populate auth file with SFDX_URL secret of integration org'
               shell: bash
               run: |
@@ -70,6 +66,7 @@ jobs:
                   pwd
                   ls
                   git log
+                  git config --global --add safe.directory /__w/core-platform/core-platform
                   mkdir changed-sources
                   sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
 
