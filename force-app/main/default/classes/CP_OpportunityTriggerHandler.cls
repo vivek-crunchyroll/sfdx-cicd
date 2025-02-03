@@ -25,19 +25,19 @@ public without sharing class CP_OpportunityTriggerHandler {
                 if(oldOpp != null && oldOpp.StageName != opp.StageName){
                     System.debug('Stage Changed from: ' + oldOpp.StageName + ' to: ' + opp.StageName);
                     //Populate Licensor Review Start Date
-                    if(opp.StageName == 'Licensor Review' && oldOpp.StageName != 'Licensor Review'){
-                        if(opp.Licensor_Review_Start_Date__c == null){
+                    if(opp.StageName == 'Licensor Review' && oldOpp.StageName != 'Licensor Review' && opp.Licensor_Review_Start_Date__c == null){
+                        
                            opp.Licensor_Review_Start_Date__c = System.now();
                             system.debug('Licensor Review Start Date Set');
-                        }
+                        
                     }
                     
                     //Populate Licensor Review End Date 
-                    else if (opp.stageName == 'Approved' && oldopp.stageName == 'Licensor Review'){
-                        if(opp.Licensor_Review_End_Date__c == null){
+                    else if (opp.stageName == 'Approved' && oldopp.stageName == 'Licensor Review' && opp.Licensor_Review_End_Date__c == null){
+                        
                            opp.Licensor_Review_End_Date__c = system.now();
                             system.debug('Licensor Review End Date Set');
-                        }
+                        
                     }
                 }
             }
