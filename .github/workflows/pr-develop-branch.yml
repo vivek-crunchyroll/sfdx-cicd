@@ -13,8 +13,8 @@ on:
 jobs:
     validate-deployment-on-develop-org:
         runs-on: ubuntu-latest
-        container:
-          image: salesforce/cli:latest-full
+        # container:
+        #   image: salesforce/cli:latest-full
         steps:
             - uses: actions/setup-node@v4
               with:
@@ -23,6 +23,18 @@ jobs:
               uses: actions/checkout@v4
               with:
                 fetch-depth: 0
+            - name: 'Install Salesforce CLI'
+              run: |
+                  wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+                  mkdir -p ~/cli/sf
+                  tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+                  echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
+                  ~/cli/sf/bin/sf version
+            - name: 'Installing java'
+              run: |
+                sudo apt-get update
+                sudo apt install default-jdk
+
             # Apex::[CommunitiesLoginControllerTest,MyProfilePageControllerTest]::Apex
             # or Apex::[all]::Apex to run all tests
             - name: 'Read PR Body'
@@ -62,10 +74,6 @@ jobs:
             # This helps reducing deployment times
             - name: 'Create delta packages for new, modified or deleted metadata'
               run: |
-                  set -x
-                  pwd
-                  ls
-                  git log
                   mkdir changed-sources
                   sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
 
