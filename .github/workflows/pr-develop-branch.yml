@@ -14,7 +14,7 @@ jobs:
     validate-deployment-on-develop-org:
         runs-on: ubuntu-latest
         container:
-          image: salesforce/cli:latest-slim
+          image: salesforce/cli:latest-full
         steps:
             - uses: actions/setup-node@v4
               with:
@@ -66,7 +66,6 @@ jobs:
                   pwd
                   ls
                   git log
-                  git config --global --add safe.directory /__w/sfdx-cicd/sfdx-cicd
                   mkdir changed-sources
                   sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
 
