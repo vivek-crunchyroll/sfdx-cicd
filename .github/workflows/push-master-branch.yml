@@ -24,7 +24,7 @@ jobs:
             shell: bash
             run: |
                 set -x
-                echo ${{ secrets.SFDX_PRODUCTION_URL}} | sf org login sfdx-url -u -a production
+                echo ${{ secrets.SFDX_PRODUCTION_URL}} | sf org login sfdx-url -u -a=production
 
           - name: 'Deploy the entire branch to Integration org'
             run: sf project deploy start -d force-app/ --target-org production --test-level RunLocalTests -w 30 --json
