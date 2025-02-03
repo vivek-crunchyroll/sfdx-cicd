@@ -3,6 +3,9 @@ on:
     pull_request:
       types: [opened, synchronize]
       branches: [ dev ]
+      # We only care about changes to the force-app directory, which is the
+      # root directory of the sfdx project. This prevents the job from running
+      # when changing non-salesforce files (like this yml file).
       paths:
         - 'force-app/**'
 
@@ -20,6 +23,26 @@ jobs:
               uses: actions/checkout@v4
               with:
                 fetch-depth: 0
+
+            # - name: 'Install Salesforce CLI'
+            #   run: |
+            #       wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+            #       mkdir -p ~/cli/sf
+            #       tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+            #       echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
+            #       ~/cli/sf/bin/sf version
+            # - name: 'Installing java'
+            #   run: |
+            #     sudo apt-get update
+            #     sudo apt install default-jdk
+            # This is an plugin that allows us to extract a package.xml with the metadata
+            # that has changed between commits.
+            # - name: 'Installing sfdx git delta'
+            #   run: |
+            #       echo y | sf plugins install sfdx-git-delta
+            #       sfdx plugins
+
+            # Install SFDX scanner
             - name: 'Installing SFDX scanner'
               run: sf plugins install @salesforce/sfdx-scanner
 
@@ -34,6 +57,9 @@ jobs:
                   TESTS=$(cat testsToRun.txt)
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
 
+            # The steps to generate the url are here
+            #sf org login web -r https://crunchyrollllc--cpdev.sandbox.my.salesforce.com
+            #sf org display --target-org vivek.chander@crunchyroll.com.cpdev --verbose --json > authFile.json
 
             # The URL is stored in the Github Secret named SFDX_INTEGRATION_URL
             - name: 'Populate auth file with SFDX_URL secret of integration org'
@@ -41,16 +67,31 @@ jobs:
               run: |
                   set -x
                   echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u
+
+
+            # We use SFDX Git Delta to create a directory with only the metadata that has changed.
+            # this allows us to deploy only those changes, as opposed to deploying the entire branch.
+            # This helps reducing deployment times
+            # - name: 'Create delta packages for new, modified or deleted metadata'
+            #   run: |
+            #       mkdir changed-sources
+            #       sf sgd source delta  --to "HEAD" --from "HEAD~1" -o changed-sources/ --generate-delta -s force-app/
+
             - name: 'Scan code'
               run: |
                   cd force-app
                   sf scanner run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'
                   cd ..
+
+            # Now we upload the .sarif file as explained in the previous step
             - name: Upload SARIF file
               uses: github/codeql-action/upload-sarif@v3
               with:
                 sarif_file: force-app/apexScanResults.sarif
 
+            # We do a check-only deploy and we only run the tests specified in the PR
+            # If the env variable does not equal 'all', we know that there is a list of
+            # tests that can be run
 
             - name: 'Check-only deploy delta changes - run specified tests'
               if: ${{ env.APEX_TESTS != 'all' }}
@@ -62,3 +103,6 @@ jobs:
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
                   sf project deploy validate -d force-app/ --test-level RunLocalTests -w 30 --json
+
+            # - name: 'Deploy destructive changes (if any)'
+            #   run: sf project deploy validate -d "changed-sources/destructiveChanges" --ignore-warnings
