@@ -33,7 +33,6 @@ jobs:
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
             - name: 'Install Salesforce CLI'
               run: |
-                  set -x
                   wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
                   mkdir -p ~/cli/sf
                   tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
@@ -70,6 +69,7 @@ jobs:
             - name: 'Populate auth file with SFDX_URL secret of integration org'
               shell: bash
               run: |
+                  set -x
                   echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
 
             # Authenticate to org using the URL stored in the text file
@@ -82,7 +82,7 @@ jobs:
             - name: 'Create delta packages for new, modified or deleted metadata'
               run: |
                   mkdir changed-sources
-                  sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+                  sfdx sgd:source:delta --to "HEAD" --from "HEAD^" -o changed-sources/ --generate-delta --source force-app/
 
             - name: 'Scan code'
               run: |
@@ -92,7 +92,7 @@ jobs:
 
             # Now we upload the .sarif file as explained in the previous step
             - name: Upload SARIF file
-              uses: github/codeql-action/upload-sarif@v1
+              uses: github/codeql-action/upload-sarif@v2
               with:
                 sarif_file: changed-sources/apexScanResults.sarif
 
@@ -104,13 +104,13 @@ jobs:
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo ${{env.APEX_TESTS}}
-                  sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+                  sf project deploy validate -d force-app/ --testlevel RunSpecifiedTests --tests ${{env.APEX_TESTS}} --json
 
             # If the env variable equals all, we run all tests
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
+                  sf project deploy validate -d force-app/ --testlevel RunAllTestsInOrg --json
 
             - name: 'Deploy destructive changes (if any)'
-              run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
+              run: sf project deploy validate -d "changed-sources/destructiveChanges" --ignore-warnings

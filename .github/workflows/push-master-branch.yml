@@ -7,7 +7,7 @@ on:
       branches: [ master ]
       paths:
         - 'force-app/**'
-            
+
 
 # Jobs to be executed
 jobs:
@@ -26,9 +26,9 @@ jobs:
 
             # install SFDX-Git-Delta plugin - https://github.com/scolladon/sfdx-git-delta
             - name: 'Installing sfdx git delta'
-              run: | 
+              run: |
                   echo y | sfdx plugins:install sfdx-git-delta
-                  sfdx plugins 
+                  sfdx plugins
 
             # Checkout the source code
             - name: 'Checkout source code'
@@ -43,9 +43,9 @@ jobs:
                   echo ${{ secrets.SFDX_PRODUCTION_URL}} > ./SFDX_PRODUCTION_URL.txt
 
             - name: 'Create delta packages for new, modified or deleted metadata'
-              run: | 
+              run: |
                   mkdir changed-sources
-                  sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+                  sfdx sgd:source:delta --to "HEAD" --from "HEAD^" -o changed-sources/ --generate-delta --source force-app/
 
             # Authenticate to org
             - name: 'Authenticate to Production Org'
@@ -55,4 +55,4 @@ jobs:
               run: sfdx force:source:deploy -p force-app --testlevel RunLocalTests --json
 
             - name: 'Deploy destructive changes (if any) to Production org'
-              run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
+              run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
