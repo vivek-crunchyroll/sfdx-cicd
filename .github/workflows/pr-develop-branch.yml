@@ -33,13 +33,6 @@ jobs:
                   node ./parsePR.js
                   TESTS=$(cat testsToRun.txt)
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-            # - name: 'Install Salesforce CLI'
-            #   run: |
-            #       wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
-            #       mkdir -p ~/cli/sf
-            #       tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
-            #       echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
-            #       ~/cli/sf/bin/sf version
 
             # This is an plugin that allows us to extract a package.xml with the metadata
             # that has changed between commits.
@@ -48,16 +41,9 @@ jobs:
                   echo y | sf plugins:install sfdx-git-delta
                   sfdx plugins
 
-            # Install java as it is required for the next step
-            # - name: 'Installing java'
-            #   run: |
-            #     sudo apt-get update
-            #     sudo apt install default-jdk
-
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
               run: sf plugins:install @salesforce/sfdx-scanner
-              # run: npm i @salesforce/sfdx-scanner
 
             # Prior to setting up this workflow, you have to create a Github Secret
             # that contains the sfdx url of the integration/qa org.
@@ -72,7 +58,7 @@ jobs:
               shell: bash
               run: |
                   set -x
-                  echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u --alias intergration
+                  echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u
 
 
             # We use SFDX Git Delta to create a directory with only the metadata that has changed.
