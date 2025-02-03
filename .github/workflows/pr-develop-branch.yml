@@ -38,12 +38,12 @@ jobs:
             # that has changed between commits.
             - name: 'Installing sfdx git delta'
               run: |
-                  echo y | sf plugins:install sfdx-git-delta
+                  echo y | sf plugins install sfdx-git-delta
                   sfdx plugins
 
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
-              run: sf plugins:install @salesforce/sfdx-scanner
+              run: sf plugins install @salesforce/sfdx-scanner
 
             # Prior to setting up this workflow, you have to create a Github Secret
             # that contains the sfdx url of the integration/qa org.
@@ -67,13 +67,13 @@ jobs:
             - name: 'Create delta packages for new, modified or deleted metadata'
               run: |
                   mkdir changed-sources
-                  sfdx sgd:source:delta --to "HEAD" --from "main" -o changed-sources/ --generate-delta --source force-app/
+                  sf sgd source delta  --to "HEAD" --from "HEAD~1" -o changed-sources/ --generate-delta -s force-app/
 
             - name: 'Scan code'
               run: |
                   cd changed-sources
                   ls -la
-                  sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'
+                  sf scanner run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'
                   cd ..
 
             # Now we upload the .sarif file as explained in the previous step
