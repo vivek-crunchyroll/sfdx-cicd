@@ -69,6 +69,7 @@ jobs:
                   set -x
                   pwd
                   ls
+                  git log
                   mkdir changed-sources
                   sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
 
