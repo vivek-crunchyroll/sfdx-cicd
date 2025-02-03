@@ -34,6 +34,16 @@ jobs:
               run: |
                 sudo apt-get update
                 sudo apt install default-jdk
+            # This is an plugin that allows us to extract a package.xml with the metadata
+            # that has changed between commits.
+            - name: 'Installing sfdx git delta'
+              run: |
+                  echo y | sf plugins install sfdx-git-delta
+                  sfdx plugins
+
+            # Install SFDX scanner
+            - name: 'Installing SFDX scanner'
+              run: sf plugins install @salesforce/sfdx-scanner
 
             # Apex::[CommunitiesLoginControllerTest,MyProfilePageControllerTest]::Apex
             # or Apex::[all]::Apex to run all tests
@@ -45,17 +55,6 @@ jobs:
                   node ./parsePR.js
                   TESTS=$(cat testsToRun.txt)
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-
-            # This is an plugin that allows us to extract a package.xml with the metadata
-            # that has changed between commits.
-            - name: 'Installing sfdx git delta'
-              run: |
-                  echo y | sf plugins install sfdx-git-delta
-                  sfdx plugins
-
-            # Install SFDX scanner
-            - name: 'Installing SFDX scanner'
-              run: sf plugins install @salesforce/sfdx-scanner
 
             # The steps to generate the url are here
             #sf org login web -r https://crunchyrollllc--cpdev.sandbox.my.salesforce.com
@@ -72,15 +71,14 @@ jobs:
             # We use SFDX Git Delta to create a directory with only the metadata that has changed.
             # this allows us to deploy only those changes, as opposed to deploying the entire branch.
             # This helps reducing deployment times
-            - name: 'Create delta packages for new, modified or deleted metadata'
-              run: |
-                  mkdir changed-sources
-                  sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
+            # - name: 'Create delta packages for new, modified or deleted metadata'
+            #   run: |
+            #       mkdir changed-sources
+            #       sf sgd source delta  --to "HEAD" --from "HEAD~1" -o changed-sources/ --generate-delta -s force-app/
 
             - name: 'Scan code'
               run: |
-                  cd changed-sources
-                  ls -la
+                  cd force-app
                   sf scanner run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'
                   cd ..
 
@@ -88,7 +86,7 @@ jobs:
             - name: Upload SARIF file
               uses: github/codeql-action/upload-sarif@v3
               with:
-                sarif_file: changed-sources/apexScanResults.sarif
+                sarif_file: force-app/apexScanResults.sarif
 
             # We do a check-only deploy and we only run the tests specified in the PR
             # If the env variable does not equal 'all', we know that there is a list of
@@ -99,7 +97,6 @@ jobs:
               run: |
                   echo ${{env.APEX_TESTS}}
                   sf project deploy validate -d force-app/ --test-level RunSpecifiedTests --tests ${{env.APEX_TESTS}} --json
-
             # If the env variable equals all, we run all tests
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
