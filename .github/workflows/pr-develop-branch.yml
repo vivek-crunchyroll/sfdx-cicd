@@ -37,8 +37,8 @@ jobs:
                   wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
                   mkdir -p ~/cli/sf
                   tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
-                  echo "$HOME/cli/" >> $GITHUB_PATH
-                  ~/cli/sf version
+                  echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
+                  ~/cli/sf/bin/sf version
 
             # This is an plugin that allows us to extract a package.xml with the metadata
             # that has changed between commits.
