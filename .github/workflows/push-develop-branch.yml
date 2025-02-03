@@ -2,7 +2,7 @@ name: Deploy integration branch to integration and staging/uat orgs
 
 on:
     push:
-      branches: [ integration ]
+      branches: [ dev ]
       paths:
         - 'force-app/**'
 
