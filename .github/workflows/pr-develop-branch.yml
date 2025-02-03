@@ -66,7 +66,7 @@ jobs:
                   pwd
                   ls
                   git log
-                  git config --global --add safe.directory /__w/core-platform/core-platform
+                  git config --global --add safe.directory /__w/sfdx-cicd/sfdx-cicd
                   mkdir changed-sources
                   sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
 
