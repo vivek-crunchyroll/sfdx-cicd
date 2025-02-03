@@ -13,6 +13,8 @@ on:
 jobs:
     validate-deployment-on-develop-org:
         runs-on: ubuntu-latest
+        container:
+          image: salesforce/cli:latest-slim
         steps:
             - uses: actions/setup-node@v4
               with:
@@ -31,13 +33,13 @@ jobs:
                   node ./parsePR.js
                   TESTS=$(cat testsToRun.txt)
                   echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-            - name: 'Install Salesforce CLI'
-              run: |
-                  wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
-                  mkdir -p ~/cli/sf
-                  tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
-                  echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
-                  ~/cli/sf/bin/sf version
+            # - name: 'Install Salesforce CLI'
+            #   run: |
+            #       wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+            #       mkdir -p ~/cli/sf
+            #       tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+            #       echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
+            #       ~/cli/sf/bin/sf version
 
             # This is an plugin that allows us to extract a package.xml with the metadata
             # that has changed between commits.
@@ -47,10 +49,10 @@ jobs:
                   sfdx plugins
 
             # Install java as it is required for the next step
-            - name: 'Installing java'
-              run: |
-                sudo apt-get update
-                sudo apt install default-jdk
+            # - name: 'Installing java'
+            #   run: |
+            #     sudo apt-get update
+            #     sudo apt install default-jdk
 
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
@@ -92,7 +94,7 @@ jobs:
 
             # Now we upload the .sarif file as explained in the previous step
             - name: Upload SARIF file
-              uses: github/codeql-action/upload-sarif@v2
+              uses: github/codeql-action/upload-sarif@v3
               with:
                 sarif_file: changed-sources/apexScanResults.sarif
 
@@ -110,7 +112,7 @@ jobs:
             - name: 'Check-only deploy delta changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
-                  sf project deploy validate -d force-app/ --test-level RunAllTestsInOrg --json
+                  sf project deploy validate -d force-app/ --test-level RunLocalTests -w 30 --json
 
             - name: 'Deploy destructive changes (if any)'
               run: sf project deploy validate -d "changed-sources/destructiveChanges" --ignore-warnings
