@@ -67,7 +67,7 @@ jobs:
             - name: 'Create delta packages for new, modified or deleted metadata'
               run: |
                   mkdir changed-sources
-                  sfdx sgd:source:delta --to "HEAD" --from "HEAD^" -o changed-sources/ --generate-delta --source force-app/
+                  sfdx sgd:source:delta --to "HEAD" --from "main" -o changed-sources/ --generate-delta --source force-app/
 
             - name: 'Scan code'
               run: |
