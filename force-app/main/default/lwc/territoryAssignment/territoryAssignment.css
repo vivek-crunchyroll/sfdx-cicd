@@ -1,0 +1,56 @@
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    /* Optional: Adds space between list items */
+}
+
+.icon-checkbox {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    /* Optional: Adds space between checkbox/icon and label */
+}
+
+.icon-checkbox lightning-icon {
+    margin-right: 5px;
+    /* Optional: Adds space between the icon and the checkbox */
+}
+
+.lightning-input {
+    margin: 0;
+    /* Optional: Removes default margin from lightning-input */
+}
+
+.searchBlock {
+    position: relative;
+    display: inline-block;
+    margin-left: 15px;
+    width: 55px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.assignmentButton {
+    background: #f47520;
+    border: none;
+    color: white;
+}
+
+.slds-list_dotted {
+    list-style-type: disclosure-closed;
+}
+
+.territory-item {
+    opacity: 1;
+    transform: translateX(-20px);
+    /* Initial position off-screen */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+/* This class will trigger the animation */
+.territory-item.show {
+    opacity: 1;
+    transform: translateX(0);
+    /* Move to its normal position */
+}

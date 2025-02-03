@@ -1,0 +1,48 @@
+<template>
+    <lightning-card title="Territory Hierarchy">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-3">
+                <span>
+                    <lightning-button variant="brand" label="Assign Territories" title="Assign Territories"
+                        class="slds-m-left_x-small assignmentButton" onclick={handleAssignment}></lightning-button>
+                    <div style="width: 100%; display:inline-block;">
+                        <div onkeyup={handleKeyUp} style="width: 90%; float:left; padding-right: 1%;">
+                            <lightning-input name="enter-search" class="searchKey"
+                                label="Enter the keyword and hit the 'enter' key" type="search"></lightning-input>
+                        </div>
+                        <div style="width: 10%; float:right; margin-top: 4%; padding-left: 1%;">
+                            <lightning-button-icon icon-name="utility:clear" variant="brand" alternative-text="Clear"
+                                onclick={handleOnClear}></lightning-button-icon>
+                        </div>
+                    </div>
+                    <c-territory-assignment-child territories={territories}
+                        onselectionchange={handleSelectionChange}></c-territory-assignment-child>
+                    <lightning-button variant="brand" label="Assign Territories" title="Assign Territories"
+                        class="slds-m-left_x-small assignmentButton" onclick={handleAssignment}></lightning-button>
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                    </template>
+                </span>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <span>
+                    <lightning-card title="Selected Territories">
+                        <div class="slds-p-around_medium">
+                            <!-- List of selected territories -->
+                            <template if:true={selectedTerritoryNames.length}>
+                                <ul class="slds-list_dotted">
+                                    <template for:each={selectedTerritoryNames} for:item="territory">
+                                        <li key={territory} class="territory-item">{territory}</li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template if:false={selectedTerritoryNames.length}>
+                                <p>No territories selected.</p>
+                            </template>
+                        </div>
+                    </lightning-card>
+                </span>
+            </div>
+        </div>
+    </lightning-card>
+</template>

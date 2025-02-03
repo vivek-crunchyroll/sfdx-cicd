@@ -1,0 +1,43 @@
+<apex:component access="global" controller="LicensorReviewcomponentController">
+    <apex:attribute name="oppId" type="string" description="The Opportunity Id to extract and display information" assignTo="{!opportunityId}" />
+    
+    <p>Dear {!opp.Applicant_Contact__c},</p>
+    
+    <p>Hope you are doing great. We are pleased to send you the {!opp.Property_Description__c} proposal from {!opp.Account.Name}.</p>
+    
+    <!--<p>{!opp.Account.Name} is an apparel company in Mexico with over 20 years of history in the local market. 
+In their portfolio, they have the licenses of Marvel, Star Wars, My Hero Academia, Jujutsu Kaisen, and many more.</p>-->
+    
+    <ul>
+        <li><strong>Company:</strong> {!opp.Account.Name}</li>
+        <li><strong>Channels of Distribution:</strong> {!opp.Distribution_Channels__c}</li>
+         <li><strong>Minimum Guarantee:</strong> {!opp.Minimum_Guarantee__c}</li>
+        <li><strong>MG Payment Schedule:</strong> {!opp.MG_Payment_Schedule__c}</li>
+        <li><strong>Start date:</strong> {!startDateFormatted}</li>
+        <li><strong> End Date:</strong> {!endDateFormatted}</li>
+        <li><strong> Royalty Rate:</strong> <br/>
+            {!opp.Wholesale__c}% Wholesale<br/>
+            {!opp.FOB__c}% FOB<br/>
+            {!opp.Retail_Direct_To_Consumer__c}% Retail / Direct To Consumer <br/>
+            {!opp.Other_Royalty_Rate__c}% Other Royalty Rate
+        </li>
+        <li><strong> Country of Production:</strong>{!opp.Country_of_Production__c} </li>
+        <li><strong> Territories:</strong>{!opp.Territory__c} </li>      
+    </ul>
+    
+    <apex:repeat value="{!lineItems}" var="title">
+        <ul>
+            <li><strong>Products:</strong> {!title.Product2.Name}</li>
+        </ul>
+    </apex:repeat>
+    
+    <!--<p>*{!opp.Account.Name} is the preferred apparel partner for important retailers like Liverpool (The main Department Store in Mexico) and Suburbia (Specialized apparel store in Mexico).</p>-->
+    <p>We are very excited about the opportunity to work with them as they increase their licensing program, now focusing on ANIME properties and have selected our IP to spearhead the new licensing collection.</p>
+    
+    <p>Please let me know if you have any questions.</p>
+    
+    <p>Thank you very much, and we look forward to hearing from you soon.</p>
+    
+    <p>Best regards,<br/>
+        {!opp.Owner.Name}.</p>
+</apex:component>

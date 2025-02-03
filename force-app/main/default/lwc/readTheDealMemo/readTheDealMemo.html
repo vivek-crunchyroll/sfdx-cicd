@@ -1,0 +1,9 @@
+<template>
+    <lightning-layout-item size="12" small-device-size="12" large-device-size="3" medium-device-size="4"
+        padding="around-small">
+        <lightning-button label="Extract Data from Deal Memo" variant="brand" onclick={handleExtractData}></lightning-button>
+         <div class="loadSpinner"><template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template></div>
+    </lightning-layout-item>
+</template>

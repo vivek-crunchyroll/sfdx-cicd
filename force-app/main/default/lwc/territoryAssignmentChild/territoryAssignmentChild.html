@@ -1,0 +1,20 @@
+<template>
+    <div style="padding-left: 1%;">
+        <ul>
+            <template for:each={localTerritories} for:item="item">
+                <li key={item.id} class="checkbox-item">
+                    <span class="icon-checkbox">
+                        <lightning-icon icon-name={item.iconName} size="x-small" data-id={item.id}
+                            onclick={handleToggle}></lightning-icon>
+                        <lightning-input type="checkbox" label={item.name} data-id={item.id} data-name={item.name}
+                            checked={item.checked} disabled={item.disabled} onchange={handleChange}></lightning-input>
+                    </span>
+                    <template if:true={item.isExpanded}>
+                        <c-territory-assignment-child territories={item.children}
+                            onselectionchange={handleSelectionChange}></c-territory-assignment-child>
+                    </template>
+                </li>
+            </template>
+        </ul>
+    </div>
+</template>

@@ -1,0 +1,33 @@
+<template>
+    <lightning-card title="Crunchyroll">
+        <lightning-record-edit-form
+            object-api-name={objectName}
+            columns="2"
+            onsuccess={handleSuccess}
+            >
+            <lightning-messages></lightning-messages>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-2">
+            <lightning-input-field field-name={fields.nameField}></lightning-input-field>
+            <lightning-input-field field-name={fields.companyField}></lightning-input-field>
+            <lightning-input-field field-name={fields.leadStatusField}></lightning-input-field>
+            <lightning-input-field field-name={fields.emailField}></lightning-input-field>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2">
+            <lightning-input-field field-name={fields.phoneField}></lightning-input-field>
+            <lightning-input-field field-name={fields.majorRegionField}></lightning-input-field>
+            <lightning-input-field field-name={fields.minorRegionField}></lightning-input-field>
+            <lightning-input-field field-name={fields.companyType}></lightning-input-field>
+            <lightning-input-field field-name={fields.descriptionField}></lightning-input-field>
+        </div>
+        </div>
+
+            <div class="slds-text-align_center">
+            <lightning-button onclick={handleReset}  class="slds-m-around_xx-small" label="cancel"></lightning-button>
+            <lightning-button variant="brand" type="submit" class="slds-m-around_xx-small" name="save" label="Save"></lightning-button>
+            </div>
+        </lightning-record-edit-form>
+    </lightning-card>
+    
+</template>

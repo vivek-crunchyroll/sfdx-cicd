@@ -1,0 +1,18 @@
+<template>
+    <div class="slds-var-p-around_medium">
+        <div class="slds-grid slds-gutters slds-var-p-bottom_medium">
+            <div class="slds-col">
+                <lightning-input type="text" label="Search Available Territories values"
+                    onchange={handleAvailableSearch}
+                    style="width: 430px;"></lightning-input>
+            </div>
+        </div>
+        <lightning-dual-listbox name="languages" label=" " source-label="Available"
+            selected-label="Selected" field-level-help="Select your preferred Territories" options={options}
+            onchange={handleChange} value={selected}>
+        </lightning-dual-listbox>
+    </div>
+    <div style="display: flex; justify-content: center;">
+    <lightning-button label="Save" onclick={handleSave} variant="brand"></lightning-button>
+    </div>
+  </template>

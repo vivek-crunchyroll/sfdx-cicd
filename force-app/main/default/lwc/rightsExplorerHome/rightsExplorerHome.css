@@ -1,0 +1,8 @@
+.filterDock {
+    width: 95%;
+    margin: 2%;
+}
+
+.listItem {
+    cursor: pointer;
+}
