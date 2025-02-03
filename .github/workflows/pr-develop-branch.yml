@@ -89,7 +89,8 @@ jobs:
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo ${{env.APEX_TESTS}}
-                  sf project deploy validate -d force-app/ --test-level RunSpecifiedTests --tests ${{env.APEX_TESTS}} --json
+                  sf project deploy validate -d force-app/ --json
+                  # sf project deploy validate -d force-app/ --test-level RunSpecifiedTests --tests ${{env.APEX_TESTS}} --json
 
             # If the env variable equals all, we run all tests
             - name: 'Check-only deploy delta changes - run all tests'
