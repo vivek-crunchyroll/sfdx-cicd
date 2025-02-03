@@ -66,6 +66,9 @@ jobs:
             # This helps reducing deployment times
             - name: 'Create delta packages for new, modified or deleted metadata'
               run: |
+                  set -x
+                  pwd
+                  ls
                   mkdir changed-sources
                   sf sgd source delta  --to "HEAD" --from "origin/main" -o changed-sources/ --generate-delta -s force-app/
 
