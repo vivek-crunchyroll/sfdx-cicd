@@ -12,6 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         container:
           image: salesforce/cli:latest-slim
+          options: --user 1001
         steps:
             - uses: actions/setup-node@v4
               with:
@@ -44,7 +45,7 @@ jobs:
 
             - name: 'Scan code'
               run: |
-                  sf scanner run -f sarif -t "force-app" -e "eslint,retire-js,pmd,cpd" -c "Design,Best Practices,Code Style,Performance,Security" --outfile force-app/apexScanResults.sarif
+                  sf scanner run -f sarif -t "force-app" -e eslint -e retire-js -e pmd -e cpd -c Design -c "Best Practices" -c "Code Style" -c Performance -c  Security --outfile force-app/apexScanResults.sarif
             - name: Upload SARIF file
               uses: github/codeql-action/upload-sarif@v3
               with:
