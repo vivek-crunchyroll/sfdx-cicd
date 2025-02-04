@@ -41,6 +41,7 @@ jobs:
               run: |
                   set -x
                   echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u
+
             - name: 'Scan code'
               run: |
                   sf scanner run -f sarif -t "force-app" -e "eslint,retire-js,pmd,cpd" -c "Design,Best Practices,Code Style,Performance,Security" --outfile force-app/apexScanResults.sarif
@@ -49,13 +50,13 @@ jobs:
               with:
                 sarif_file: force-app/apexScanResults.sarif
 
-            - name: 'Check-only deploy delta changes - run specified tests'
+            - name: 'Check-only deploy changes - run specified tests'
               if: ${{ env.APEX_TESTS != 'all' }}
               run: |
                   echo ${{env.APEX_TESTS}}
-                  sf project deploy validate -d force-app --test-level RunSpecifiedTests --tests ${{env.APEX_TESTS}} --json
+                  sf project deploy validate -d force-app --test-level RunSpecifiedTests --tests ${{env.APEX_TESTS}} --coverage-formatters=clover --json
             # If the env variable equals all, we run all tests
-            - name: 'Check-only deploy delta changes - run all tests'
+            - name: 'Check-only deploy changes - run all tests'
               if: ${{ env.APEX_TESTS == 'all' }}
               run: |
                   sf project deploy validate -d force-app --test-level RunLocalTests -w 30 --coverage-formatters=clover --json
