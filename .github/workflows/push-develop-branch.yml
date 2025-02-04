@@ -9,20 +9,20 @@ on:
 
 jobs:
     deploy-branch-to-int-and-staging-orgs:
-        runs-on: ubuntu-latest
-        container:
-          image: salesforce/cli:latest-slim
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
-              with:
-                fetch-depth: 0
+      runs-on: ubuntu-latest
+      container:
+        image: salesforce/cli:latest-slim
+      steps:
+          - name: 'Checkout source code'
+            uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
 
-            - name: 'Authenticate to Integration Org'
-              shell: bash
-              run: |
-                  set -x
-                  echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u
+          - name: 'Authenticate to Integration Org'
+            shell: bash
+            run: |
+                set -x
+                echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u
 
-            - name: 'Deploy the entire branch to Integration org'
-              run: sf project deploy start -d force-app/ --test-level RunLocalTests -w 30 --json
+          - name: 'Deploy the entire branch to Integration org'
+            run: sf project deploy start -d force-app --test-level RunLocalTests -w 30 --coverage-formatters=clover --json
