@@ -3,7 +3,7 @@
     <fullName>FOB__c</fullName>
     <label>% FOB</label>
     <precision>18</precision>
-    <required>false</required>
+    <required>true</required>
     <scale>0</scale>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
