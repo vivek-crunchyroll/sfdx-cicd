@@ -17,7 +17,7 @@ jobs:
               with:
                 node-version: '20'
             - name: 'Checkout source code'
-              uses: actions/checkout@v4
+              uses: actions/checkout@v3
               with:
                 fetch-depth: 0
             - name: 'Installing SFDX scanner'
@@ -43,7 +43,7 @@ jobs:
                   echo ${{ secrets.SFDX_INTEGRATION_URL}} | sf org login sfdx-url -s -u
             - name: 'Scan code'
               run: |
-                  sf scanner run -f sarif -t "force-app" -e "eslint,retire-js,pmd,cpd" -c "Design,Best Practices,Code Style,Performance,Security" --outfile force-app/apexScanResults.sarif
+                  sf scanner run -f sarif -t "force-app" -e eslint -e retire-js -e pmd -e cpd -c Design -c "Best Practices" -c "Code Style" -c Performance -c  Security --outfile force-app/apexScanResults.sarif
             - name: Upload SARIF file
               uses: github/codeql-action/upload-sarif@v3
               with:
